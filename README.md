@@ -14,3 +14,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [1.6. NodePort Service](./todo-app) — tag `1.6`
 * [1.7. External access with Ingress](./log-output) — tag `1.7`
 * [1.8. Todo app with Ingress](./todo-app) — tag `1.8`
+* [1.9. Ping-pong application](./ping-pong) — tag `1.9`
