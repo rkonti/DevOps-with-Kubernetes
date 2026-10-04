@@ -11,3 +11,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [1.3. Declarative approach (log output)](./log-output) — tag `1.3`
 * [1.4. Declarative approach (todo app)](./todo-app) — tag `1.4`
 * [1.5. Todo app serves HTML](./todo-app) — tag `1.5`
+* [1.6. NodePort Service](./todo-app) — tag `1.6`
