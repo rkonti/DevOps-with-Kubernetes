@@ -13,3 +13,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [1.5. Todo app serves HTML](./todo-app) — tag `1.5`
 * [1.6. NodePort Service](./todo-app) — tag `1.6`
 * [1.7. External access with Ingress](./log-output) — tag `1.7`
+* [1.8. Todo app with Ingress](./todo-app) — tag `1.8`
