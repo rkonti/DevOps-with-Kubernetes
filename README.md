@@ -16,3 +16,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [1.8. Todo app with Ingress](./todo-app) — tag `1.8`
 * [1.9. Ping-pong application](./ping-pong) — tag `1.9`
 * [1.10. Even more services](./log-output) — tag `1.10`
+* [1.11. Persisting data](./volumes) — tag `1.11`
