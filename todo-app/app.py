@@ -1,3 +1,4 @@
+import html
 import json
 import os
 import time
@@ -21,10 +22,23 @@ HTML = """<!doctype html>
 <body>
   <h1>Todo App</h1>
   <img src="/image?v={version}" alt="Random image" style="max-width: 600px; width: 100%;">
+  <form onsubmit="event.preventDefault()">
+    <input type="text" name="todo" maxlength="140" required placeholder="Todo (max 140 characters)">
+    <button type="submit">Send</button>
+  </form>
+  <ul>
+{todos}
+  </ul>
   <p>DevOps with Kubernetes 2026</p>
 </body>
 </html>
 """
+
+TODOS = [
+    "Learn JavaScript",
+    "Learn React",
+    "Build a project",
+]
 
 def load_meta():
     try:
@@ -77,7 +91,8 @@ class Handler(BaseHTTPRequestHandler):
         path = self.path.split("?")[0]
         if path == "/":
             meta = current_image()
-            body = HTML.format(version=int(meta["fetched_at"])).encode()
+            todos = "\n".join(f"    <li>{html.escape(todo)}</li>" for todo in TODOS)
+            body = HTML.format(version=int(meta["fetched_at"]), todos=todos).encode()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
