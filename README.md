@@ -17,3 +17,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [1.9. Ping-pong application](./ping-pong) — tag `1.9`
 * [1.10. Even more services](./log-output) — tag `1.10`
 * [1.11. Persisting data](./volumes) — tag `1.11`
+* [1.12. Project v0.6](./todo-app) — tag `1.12`
