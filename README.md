@@ -19,3 +19,7 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [1.11. Persisting data](./volumes) — tag `1.11`
 * [1.12. Project v0.6](./todo-app) — tag `1.12`
 * [1.13. Project v0.7](./todo-app) — tag `1.13`
+
+### Chapter 2
+
+* [2.1. Connecting pods](./log-output) — tag `2.1`

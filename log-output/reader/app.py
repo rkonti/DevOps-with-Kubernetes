@@ -1,9 +1,10 @@
 import os
+import urllib.request
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 PORT = int(os.getenv("PORT", "3000"))
 LOG_FILE = os.getenv("LOG_FILE", "/usr/src/app/files/log.txt")
-COUNT_FILE = os.getenv("COUNT_FILE", "/usr/src/app/files/pingpong.txt")
+PINGS_URL = os.getenv("PINGS_URL", "http://ping-pong-svc:2345/pings")
 
 def latest_line():
     try:
@@ -15,10 +16,10 @@ def latest_line():
 
 def pingpong_count():
     try:
-        with open(COUNT_FILE) as f:
-            return int(f.read().strip() or 0)
-    except FileNotFoundError:
-        return 0
+        with urllib.request.urlopen(PINGS_URL, timeout=2) as res:
+            return int(res.read().decode().strip())
+    except (OSError, ValueError):
+        return "unavailable"
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
