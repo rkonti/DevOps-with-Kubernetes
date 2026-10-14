@@ -17,6 +17,12 @@ spec:
         - name: shared-files
           persistentVolumeClaim:
             claimName: shared-claim
+        - name: config
+          configMap:
+            name: log-output-config
+            items:
+              - key: information.txt
+                path: information.txt
       containers:
         - name: log-writer
           image: log-output-writer:1.11
@@ -28,7 +34,7 @@ spec:
             - name: shared-files
               mountPath: /usr/src/app/files
         - name: log-reader
-          image: log-output-reader:2.1
+          image: log-output-reader:2.5
           imagePullPolicy: IfNotPresent
           env:
             - name: PORT
@@ -37,6 +43,16 @@ spec:
               value: /usr/src/app/files/log.txt
             - name: PINGS_URL
               value: http://ping-pong-svc:2345/pings
+            - name: INFO_FILE
+              value: /usr/src/app/config/information.txt
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: log-output-config
+                  key: MESSAGE
           volumeMounts:
             - name: shared-files
               mountPath: /usr/src/app/files
+            - name: config
+              mountPath: /usr/src/app/config
+              readOnly: true

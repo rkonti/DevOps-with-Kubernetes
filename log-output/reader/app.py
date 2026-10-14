@@ -5,6 +5,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 PORT = int(os.getenv("PORT", "3000"))
 LOG_FILE = os.getenv("LOG_FILE", "/usr/src/app/files/log.txt")
 PINGS_URL = os.getenv("PINGS_URL", "http://ping-pong-svc:2345/pings")
+INFO_FILE = os.getenv("INFO_FILE", "/usr/src/app/config/information.txt")
+MESSAGE = os.getenv("MESSAGE", "")
 
 def latest_line():
     try:
@@ -13,6 +15,13 @@ def latest_line():
     except FileNotFoundError:
         return "No logs yet"
     return lines[-1] if lines else "No logs yet"
+
+def information():
+    try:
+        with open(INFO_FILE) as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        return ""
 
 def pingpong_count():
     try:
@@ -26,7 +35,12 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", "text/plain; charset=utf-8")
         self.end_headers()
-        body = f"{latest_line()}.\nPing / Pongs: {pingpong_count()}"
+        body = (
+            f"file content: {information()}\n"
+            f"env variable: MESSAGE={MESSAGE}\n"
+            f"{latest_line()}.\n"
+            f"Ping / Pongs: {pingpong_count()}"
+        )
         self.wfile.write(body.encode())
 
 print(f"Server started in port {PORT}", flush=True)
