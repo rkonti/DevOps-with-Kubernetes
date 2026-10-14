@@ -6,11 +6,12 @@ import urllib.parse
 import urllib.request
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-PORT = int(os.getenv("PORT", "3000"))
-CACHE_DIR = os.getenv("CACHE_DIR", "/usr/src/app/files")
-IMAGE_URL = os.getenv("IMAGE_URL", "https://picsum.photos/1200")
-IMAGE_TTL = int(os.getenv("IMAGE_TTL_SECONDS", "600"))
-TODOS_URL = os.getenv("TODOS_URL", "http://todo-backend-svc:2345/todos")
+PORT = int(os.environ["PORT"])
+CACHE_DIR = os.environ["CACHE_DIR"]
+IMAGE_URL = os.environ["IMAGE_URL"]
+IMAGE_TTL = int(os.environ["IMAGE_TTL_SECONDS"])
+TODOS_URL = os.environ["TODOS_URL"]
+TODO_MAX_LENGTH = int(os.environ["TODO_MAX_LENGTH"])
 
 IMAGE_FILE = os.path.join(CACHE_DIR, "image.jpg")
 META_FILE = os.path.join(CACHE_DIR, "image.json")
@@ -25,7 +26,7 @@ HTML = """<!doctype html>
   <h1>Todo App</h1>
   <img src="/image?v={version}" alt="Random image" style="max-width: 600px; width: 100%;">
   <form method="post" action="/todos">
-    <input type="text" name="todo" maxlength="140" required placeholder="Todo (max 140 characters)">
+    <input type="text" name="todo" maxlength="{max_length}" required placeholder="Todo (max {max_length} characters)">
     <button type="submit">Send</button>
   </form>
   <ul>
@@ -108,7 +109,9 @@ class Handler(BaseHTTPRequestHandler):
             except OSError as e:
                 print(f"Failed to fetch todos: {e}", flush=True)
                 todos = "    <li>Could not load todos</li>"
-            body = HTML.format(version=int(meta["fetched_at"]), todos=todos).encode()
+            body = HTML.format(
+                version=int(meta["fetched_at"]), todos=todos, max_length=TODO_MAX_LENGTH
+            ).encode()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()

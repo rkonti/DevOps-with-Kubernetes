@@ -19,15 +19,33 @@ spec:
             claimName: todo-app-claim
       containers:
         - name: todo-app
-          image: todo-app:2.2
+          image: todo-app:2.6
           imagePullPolicy: IfNotPresent
           env:
             - name: PORT
               value: "3000"
             - name: CACHE_DIR
               value: /usr/src/app/files
+            - name: IMAGE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-config
+                  key: IMAGE_URL
+            - name: IMAGE_TTL_SECONDS
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-config
+                  key: IMAGE_TTL_SECONDS
             - name: TODOS_URL
-              value: http://todo-backend-svc:2345/todos
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-config
+                  key: TODOS_URL
+            - name: TODO_MAX_LENGTH
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-config
+                  key: TODO_MAX_LENGTH
           volumeMounts:
             - name: image-cache
               mountPath: /usr/src/app/files

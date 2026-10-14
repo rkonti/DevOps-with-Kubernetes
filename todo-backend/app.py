@@ -2,8 +2,8 @@ import json
 import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-PORT = int(os.getenv("PORT", "3000"))
-MAX_LENGTH = 140
+PORT = int(os.environ["PORT"])
+MAX_LENGTH = int(os.environ["TODO_MAX_LENGTH"])
 
 todos = []
 

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-config
+  namespace: project
+data:
+  IMAGE_URL: https://picsum.photos/1200
+  IMAGE_TTL_SECONDS: "600"
+  TODOS_URL: http://todo-backend-svc:2345/todos
+  TODO_MAX_LENGTH: "140"
