@@ -23,3 +23,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 ### Chapter 2
 
 * [2.1. Connecting pods](./log-output) — tag `2.1`
+* [2.2. Project v1.0](./todo-backend) — tag `2.2`

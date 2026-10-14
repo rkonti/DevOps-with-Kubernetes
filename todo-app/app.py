@@ -2,6 +2,7 @@ import html
 import json
 import os
 import time
+import urllib.parse
 import urllib.request
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -9,6 +10,7 @@ PORT = int(os.getenv("PORT", "3000"))
 CACHE_DIR = os.getenv("CACHE_DIR", "/usr/src/app/files")
 IMAGE_URL = os.getenv("IMAGE_URL", "https://picsum.photos/1200")
 IMAGE_TTL = int(os.getenv("IMAGE_TTL_SECONDS", "600"))
+TODOS_URL = os.getenv("TODOS_URL", "http://todo-backend-svc:2345/todos")
 
 IMAGE_FILE = os.path.join(CACHE_DIR, "image.jpg")
 META_FILE = os.path.join(CACHE_DIR, "image.json")
@@ -22,7 +24,7 @@ HTML = """<!doctype html>
 <body>
   <h1>Todo App</h1>
   <img src="/image?v={version}" alt="Random image" style="max-width: 600px; width: 100%;">
-  <form onsubmit="event.preventDefault()">
+  <form method="post" action="/todos">
     <input type="text" name="todo" maxlength="140" required placeholder="Todo (max 140 characters)">
     <button type="submit">Send</button>
   </form>
@@ -34,11 +36,19 @@ HTML = """<!doctype html>
 </html>
 """
 
-TODOS = [
-    "Learn JavaScript",
-    "Learn React",
-    "Build a project",
-]
+def fetch_todos():
+    with urllib.request.urlopen(TODOS_URL, timeout=5) as response:
+        return json.load(response)
+
+def create_todo(content):
+    request = urllib.request.Request(
+        TODOS_URL,
+        data=json.dumps({"content": content}).encode(),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(request, timeout=5):
+        pass
 
 def load_meta():
     try:
@@ -91,7 +101,13 @@ class Handler(BaseHTTPRequestHandler):
         path = self.path.split("?")[0]
         if path == "/":
             meta = current_image()
-            todos = "\n".join(f"    <li>{html.escape(todo)}</li>" for todo in TODOS)
+            try:
+                todos = "\n".join(
+                    f"    <li>{html.escape(todo['content'])}</li>" for todo in fetch_todos()
+                )
+            except OSError as e:
+                print(f"Failed to fetch todos: {e}", flush=True)
+                todos = "    <li>Could not load todos</li>"
             body = HTML.format(version=int(meta["fetched_at"]), todos=todos).encode()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -120,6 +136,23 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self.send_response(404)
             self.end_headers()
+
+    def do_POST(self):
+        if self.path != "/todos":
+            self.send_response(404)
+            self.end_headers()
+            return
+        length = int(self.headers.get("Content-Length", 0))
+        form = urllib.parse.parse_qs(self.rfile.read(length).decode())
+        content = form.get("todo", [""])[0]
+        try:
+            create_todo(content)
+        except OSError as e:
+            print(f"Failed to create todo: {e}", flush=True)
+        # Redirect back so a page refresh doesn't resubmit the form
+        self.send_response(303)
+        self.send_header("Location", "/")
+        self.end_headers()
 
 os.makedirs(CACHE_DIR, exist_ok=True)
 
