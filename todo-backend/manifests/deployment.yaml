@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: todo-backend
-          image: todo-backend:2.6
+          image: todo-backend:2.8
           imagePullPolicy: IfNotPresent
           env:
             - name: PORT
@@ -25,3 +25,23 @@ spec:
                 configMapKeyRef:
                   name: todo-config
                   key: TODO_MAX_LENGTH
+            - name: PGHOST
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-config
+                  key: PGHOST
+            - name: PGDATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-config
+                  key: PGDATABASE
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: todo-db-secret
+                  key: POSTGRES_USER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: todo-db-secret
+                  key: POSTGRES_PASSWORD

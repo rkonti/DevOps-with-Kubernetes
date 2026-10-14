@@ -8,3 +8,5 @@ data:
   IMAGE_TTL_SECONDS: "600"
   TODOS_URL: http://todo-backend-svc:2345/todos
   TODO_MAX_LENGTH: "140"
+  PGHOST: todo-db-svc
+  PGDATABASE: todos
