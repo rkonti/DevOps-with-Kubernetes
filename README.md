@@ -28,3 +28,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [2.4. Project v1.1](./namespaces) — tag `2.4`
 * [2.5. Documentation and ConfigMaps](./log-output) — tag `2.5`
 * [2.6. Project v1.2](./todo-app) — tag `2.6`
+* [2.7. Stateful applications](./ping-pong) — tag `2.7`
