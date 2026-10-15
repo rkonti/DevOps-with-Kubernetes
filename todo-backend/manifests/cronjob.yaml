@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: wiki-todo
+  namespace: project
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: wiki-todo
+              image: curlimages/curl:8.11.1
+              env:
+                - name: TODOS_URL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: todo-config
+                      key: TODOS_URL
+                - name: RANDOM_ARTICLE_URL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: todo-config
+                      key: RANDOM_ARTICLE_URL
+              command:
+                - sh
+                - -c
+                - |
+                  set -eu
+                  # Special:Random redirects to a random article, so read the
+                  # Location header instead of following the redirect
+                  url=$(curl -sS -A "dwk-todo-reminder/1.0" -o /dev/null -w '%{redirect_url}' "$RANDOM_ARTICLE_URL")
+                  if [ -z "$url" ]; then
+                    echo "No redirect from $RANDOM_ARTICLE_URL" >&2
+                    exit 1
+                  fi
+                  echo "Creating todo: Read $url"
+                  curl -fsS -X POST -H "Content-Type: application/json" \
+                    -d "{\"content\": \"Read $url\"}" "$TODOS_URL"
