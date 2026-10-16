@@ -31,3 +31,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [2.7. Stateful applications](./ping-pong) — tag `2.7`
 * [2.8. Project v1.3](./todo-backend) — tag `2.8`
 * [2.9. Project v1.4](./todo-backend) — tag `2.9`
+* [2.10. Project v1.5](./todo-backend) — tag `2.10` (monitoring stack in [monitoring](./monitoring))

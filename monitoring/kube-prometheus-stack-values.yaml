@@ -1,0 +1,6 @@
+grafana:
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      url: http://loki.loki-stack.svc.cluster.local:3100
+      access: proxy

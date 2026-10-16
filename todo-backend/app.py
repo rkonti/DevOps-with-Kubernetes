@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -8,6 +9,9 @@ from psycopg.rows import dict_row
 
 PORT = int(os.environ["PORT"])
 MAX_LENGTH = int(os.environ["TODO_MAX_LENGTH"])
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+log = logging.getLogger("todo-backend")
 
 # psycopg reads the connection settings from the standard libpq
 # environment variables (PGHOST, PGUSER, PGPASSWORD, PGDATABASE)
@@ -23,7 +27,7 @@ def init_db():
                 )
             return
         except psycopg.OperationalError as e:
-            print(f"Database not ready, retrying: {e}", flush=True)
+            log.warning("Database not ready, retrying: %s", e)
             time.sleep(2)
 
 def fetch_todos():
@@ -37,6 +41,10 @@ def create_todo(content):
         ).fetchone()
 
 class Handler(BaseHTTPRequestHandler):
+    # Route the built-in access log through our logger
+    def log_message(self, format, *args):
+        log.info("%s %s", self.address_string(), format % args)
+
     def send_json(self, status, data):
         body = json.dumps(data).encode()
         self.send_response(status)
@@ -51,7 +59,7 @@ class Handler(BaseHTTPRequestHandler):
         try:
             self.send_json(200, fetch_todos())
         except psycopg.Error as e:
-            print(f"Database error: {e}", flush=True)
+            log.error("Database error: %s", e)
             self.send_json(503, {"error": "database unavailable"})
 
     def do_POST(self):
@@ -62,20 +70,24 @@ class Handler(BaseHTTPRequestHandler):
         try:
             content = json.loads(self.rfile.read(length))["content"].strip()
         except (json.JSONDecodeError, KeyError, TypeError, AttributeError):
+            log.warning("Rejected todo: invalid request body")
             self.send_json(400, {"error": "expected JSON body with a 'content' string"})
             return
         if not content or len(content) > MAX_LENGTH:
+            log.warning("Rejected todo (%d characters, limit %d): %r", len(content), MAX_LENGTH, content)
             self.send_json(400, {"error": f"content must be 1-{MAX_LENGTH} characters"})
             return
         try:
-            self.send_json(201, create_todo(content))
+            todo = create_todo(content)
+            log.info("Created todo %d: %r", todo["id"], content)
+            self.send_json(201, todo)
         except psycopg.Error as e:
-            print(f"Database error: {e}", flush=True)
+            log.error("Database error: %s", e)
             self.send_json(503, {"error": "database unavailable"})
 
 init_db()
 
-print(f"Server started in port {PORT}", flush=True)
+log.info("Server started in port %d", PORT)
 
 server = HTTPServer(("0.0.0.0", PORT), Handler)
 server.serve_forever()
