@@ -48,13 +48,11 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            if self.path == "/pingpong":
+            # The HTTPRoute rewrites /pingpong to /
+            if self.path == "/":
                 self.send_text(200, f"pong {increment_counter()}")
             elif self.path == "/pings":
                 self.send_text(200, str(get_counter()))
-            elif self.path == "/":
-                # GKE Ingress health checks expect a 200 from /
-                self.send_text(200, "ok")
             else:
                 self.send_text(404, "Not found")
         except psycopg.Error as e:

@@ -6,35 +6,36 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 
 ### Chapter 1
 
-* [1.1. Log output](./log-output) — tag `1.1`
-* [1.2. Todo app start](./todo-app) — tag `1.2`
-* [1.3. Declarative approach (log output)](./log-output) — tag `1.3`
-* [1.4. Declarative approach (todo app)](./todo-app) — tag `1.4`
-* [1.5. Todo app serves HTML](./todo-app) — tag `1.5`
-* [1.6. NodePort Service](./todo-app) — tag `1.6`
-* [1.7. External access with Ingress](./log-output) — tag `1.7`
-* [1.8. Todo app with Ingress](./todo-app) — tag `1.8`
-* [1.9. Ping-pong application](./ping-pong) — tag `1.9`
-* [1.10. Even more services](./log-output) — tag `1.10`
-* [1.11. Persisting data](./volumes) — tag `1.11`
-* [1.12. Project v0.6](./todo-app) — tag `1.12`
-* [1.13. Project v0.7](./todo-app) — tag `1.13`
+* [1.1. Log output](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.1/log-output) — tag `1.1`
+* [1.2. Todo app start](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.2/todo-app) — tag `1.2`
+* [1.3. Declarative approach (log output)](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.3/log-output) — tag `1.3`
+* [1.4. Declarative approach (todo app)](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.4/todo-app) — tag `1.4`
+* [1.5. Todo app serves HTML](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.5/todo-app) — tag `1.5`
+* [1.6. NodePort Service](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.6/todo-app) — tag `1.6`
+* [1.7. External access with Ingress](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.7/log-output) — tag `1.7`
+* [1.8. Todo app with Ingress](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.8/todo-app) — tag `1.8`
+* [1.9. Ping-pong application](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.9/ping-pong) — tag `1.9`
+* [1.10. Even more services](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.10/log-output) — tag `1.10`
+* [1.11. Persisting data](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.11/volumes) — tag `1.11`
+* [1.12. Project v0.6](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.12/todo-app) — tag `1.12`
+* [1.13. Project v0.7](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.13/todo-app) — tag `1.13`
 
 ### Chapter 2
 
-* [2.1. Connecting pods](./log-output) — tag `2.1`
-* [2.2. Project v1.0](./todo-backend) — tag `2.2`
-* [2.3. Keep them separated](./namespaces) — tag `2.3`
-* [2.4. Project v1.1](./namespaces) — tag `2.4`
-* [2.5. Documentation and ConfigMaps](./log-output) — tag `2.5`
-* [2.6. Project v1.2](./todo-app) — tag `2.6`
-* [2.7. Stateful applications](./ping-pong) — tag `2.7`
-* [2.8. Project v1.3](./todo-backend) — tag `2.8`
-* [2.9. Project v1.4](./todo-backend) — tag `2.9`
-* [2.10. Project v1.5](./todo-backend) — tag `2.10` (monitoring stack in [monitoring](./monitoring))
+* [2.1. Connecting pods](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.1/log-output) — tag `2.1`
+* [2.2. Project v1.0](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.2/todo-backend) — tag `2.2`
+* [2.3. Keep them separated](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.3/namespaces) — tag `2.3`
+* [2.4. Project v1.1](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.4/namespaces) — tag `2.4`
+* [2.5. Documentation and ConfigMaps](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.5/log-output) — tag `2.5`
+* [2.6. Project v1.2](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.6/todo-app) — tag `2.6`
+* [2.7. Stateful applications](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.7/ping-pong) — tag `2.7`
+* [2.8. Project v1.3](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.8/todo-backend) — tag `2.8`
+* [2.9. Project v1.4](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.9/todo-backend) — tag `2.9`
+* [2.10. Project v1.5](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.10/todo-backend) — tag `2.10` (monitoring stack in [monitoring](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.10/monitoring))
 
 ### Chapter 3
 
-* [3.1. Pingpong GKE](./ping-pong) — tag `3.1`
-* [3.2. Back to Ingress](./log-output) — tag `3.2`
-* [3.3. To the Gateway](./log-output) — tag `3.3`
+* [3.1. Pingpong GKE](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.1/ping-pong) — tag `3.1`
+* [3.2. Back to Ingress](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.2/log-output) — tag `3.2`
+* [3.3. To the Gateway](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.3/log-output) — tag `3.3`
+* [3.4. Rewritten routing](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.4/ping-pong) — tag `3.4`

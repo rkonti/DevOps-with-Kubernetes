@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ping-pong
-          image: europe-north1-docker.pkg.dev/dwk-gke-513214/dwk/ping-pong:3.2
+          image: europe-north1-docker.pkg.dev/dwk-gke-513214/dwk/ping-pong:3.4
           imagePullPolicy: IfNotPresent
           env:
             - name: PORT
