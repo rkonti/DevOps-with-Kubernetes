@@ -4,10 +4,10 @@ metadata:
   name: ping-pong-svc
   namespace: exercises
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: ping-pong
   ports:
-    - port: 2345
+    - port: 80
       protocol: TCP
       targetPort: 3000
