@@ -4,7 +4,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 PORT = int(os.getenv("PORT", "3000"))
 LOG_FILE = os.getenv("LOG_FILE", "/usr/src/app/files/log.txt")
-PINGS_URL = os.getenv("PINGS_URL", "http://ping-pong-svc:2345/pings")
+PINGS_URL = os.getenv("PINGS_URL", "http://ping-pong-svc/pings")
 INFO_FILE = os.getenv("INFO_FILE", "/usr/src/app/config/information.txt")
 MESSAGE = os.getenv("MESSAGE", "")
 

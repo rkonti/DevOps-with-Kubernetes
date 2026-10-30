@@ -36,3 +36,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 ### Chapter 3
 
 * [3.1. Pingpong GKE](./ping-pong) — tag `3.1`
+* [3.2. Back to Ingress](./log-output) — tag `3.2`
