@@ -40,3 +40,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [3.3. To the Gateway](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.3/log-output) — tag `3.3`
 * [3.4. Rewritten routing](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.4/ping-pong) — tag `3.4`
 * [3.5. Project, step 14](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.5/kustomization.yaml) — tag `3.5`
+* [3.6. Project, step 15](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.6/.github/workflows/main.yaml) — tag `3.6`
