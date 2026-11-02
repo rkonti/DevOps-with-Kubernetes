@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: project
+resources:
+  - namespaces/project.yaml
+  - todo-app/manifests/configmap.yaml
+  - todo-app/manifests/persistentvolumeclaim.yaml
+  - todo-app/manifests/deployment.yaml
+  - todo-app/manifests/service.yaml
+  - todo-app/manifests/ingress.yaml
+  - todo-backend/manifests/postgres-secret.yaml
+  - todo-backend/manifests/postgres-service.yaml
+  - todo-backend/manifests/postgres-statefulset.yaml
+  - todo-backend/manifests/deployment.yaml
+  - todo-backend/manifests/service.yaml
+  - todo-backend/manifests/cronjob.yaml
+images:
+  - name: PROJECT/TODO-APP
+    newName: europe-north1-docker.pkg.dev/dwk-gke-513214/dwk/todo-app
+    newTag: "3.5"
+  - name: PROJECT/TODO-BACKEND
+    newName: europe-north1-docker.pkg.dev/dwk-gke-513214/dwk/todo-backend
+    newTag: "3.5"
