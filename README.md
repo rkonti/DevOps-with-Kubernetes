@@ -42,3 +42,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [3.5. Project, step 14](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.5/kustomization.yaml) — tag `3.5`
 * [3.6. Project, step 15](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.6/.github/workflows/main.yaml) — tag `3.6`
 * [3.7. Project, step 16](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.7/.github/workflows/main.yaml) — tag `3.7`
+* [3.8. Project, step 17](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.8/.github/workflows/delete.yaml) — tag `3.8`
