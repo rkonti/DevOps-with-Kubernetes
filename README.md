@@ -4,7 +4,7 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 
 ## Exercises
 
-### Chapter 1
+### Chapter 2
 
 * [1.1. Log output](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.1/log-output) — tag `1.1`
 * [1.2. Todo app start](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.2/todo-app) — tag `1.2`
@@ -20,7 +20,7 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [1.12. Project v0.6](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.12/todo-app) — tag `1.12`
 * [1.13. Project v0.7](https://github.com/rkonti/DevOps-with-Kubernetes/tree/1.13/todo-app) — tag `1.13`
 
-### Chapter 2
+### Chapter 3
 
 * [2.1. Connecting pods](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.1/log-output) — tag `2.1`
 * [2.2. Project v1.0](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.2/todo-backend) — tag `2.2`
@@ -33,7 +33,7 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [2.9. Project v1.4](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.9/todo-backend) — tag `2.9`
 * [2.10. Project v1.5](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.10/todo-backend) — tag `2.10` (monitoring stack in [monitoring](https://github.com/rkonti/DevOps-with-Kubernetes/tree/2.10/monitoring))
 
-### Chapter 3
+### Chapter 4
 
 * [3.1. Pingpong GKE](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.1/ping-pong) — tag `3.1`
 * [3.2. Back to Ingress](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.2/log-output) — tag `3.2`
@@ -41,3 +41,4 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [3.4. Rewritten routing](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.4/ping-pong) — tag `3.4`
 * [3.5. Project, step 14](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.5/kustomization.yaml) — tag `3.5`
 * [3.6. Project, step 15](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.6/.github/workflows/main.yaml) — tag `3.6`
+* [3.7. Project, step 16](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.7/.github/workflows/main.yaml) — tag `3.7`
