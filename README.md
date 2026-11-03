@@ -43,3 +43,18 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [3.6. Project, step 15](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.6/.github/workflows/main.yaml) — tag `3.6`
 * [3.7. Project, step 16](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.7/.github/workflows/main.yaml) — tag `3.7`
 * [3.8. Project, step 17](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.8/.github/workflows/delete.yaml) — tag `3.8`
+* [3.9. DBaaS vs DIY](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.9#39-dbaas-vs-diy) — tag `3.9`
+
+
+## 3.9 DBaaS vs DIY
+Analyzing the pros and cons of DBaaS vs DIY:
+
+| |DBaaS|DIY|
+|---|---|---|
+|Initial setup|Little work the provider does most of it you only need to enter secrets and tick boxes|A lot more work for setup|
+|Cost|Higher longterm costs, even when idle|Lower long term costs as it runs on your own nodes|
+|Maintenance|Provider handles all of the maintenance|All on you, you do all of the maintenance yourself|
+|Backup|Automatic|You build them yourself|
+|Ease of use|Easy but you have a lot less control|Harder but you maintain control|
+
+TL;DR: DBaaS costs more but saves a lot of work, while DIY is cheaper but takes much more work.
