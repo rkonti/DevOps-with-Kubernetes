@@ -1,15 +1,18 @@
 name: Release project
 
+# The GKE cluster was retired after chapter 4, so this only runs manually.
+# For exercises 3.6-3.7 it ran on:
+#   push:
+#     branches:
+#       - "**"
+#     paths:
+#       - todo-app/**
+#       - todo-backend/**
+#       - namespaces/project.yaml
+#       - kustomization.yaml
+#       - .github/workflows/main.yaml
 on:
-  push:
-    branches:
-      - "**"
-    paths:
-      - todo-app/**
-      - todo-backend/**
-      - namespaces/project.yaml
-      - kustomization.yaml
-      - .github/workflows/main.yaml
+  workflow_dispatch:
 
 permissions:
   contents: read

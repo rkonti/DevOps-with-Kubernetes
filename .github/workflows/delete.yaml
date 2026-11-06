@@ -1,7 +1,10 @@
 name: Delete environment
 
+# The GKE cluster was retired after chapter 4, so this only runs manually.
+# For exercise 3.8 it ran on:
+#   delete:
 on:
-  delete:
+  workflow_dispatch:
 
 permissions:
   contents: read
