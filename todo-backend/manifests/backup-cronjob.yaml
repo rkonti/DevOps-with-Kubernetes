@@ -1,0 +1,75 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: todo-backup
+  namespace: project
+spec:
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          # Authenticates to Cloud Storage through Workload Identity Federation for GKE
+          serviceAccountName: todo-backup
+          volumes:
+            - name: backup
+              emptyDir: {}
+          initContainers:
+            # pg_dump must be at least the server's version, so use the same image as the database
+            - name: dump
+              image: postgres:17-alpine
+              env:
+                - name: PGHOST
+                  valueFrom:
+                    configMapKeyRef:
+                      name: todo-config
+                      key: PGHOST
+                - name: PGDATABASE
+                  valueFrom:
+                    configMapKeyRef:
+                      name: todo-config
+                      key: PGDATABASE
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: todo-db-secret
+                      key: POSTGRES_USER
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: todo-db-secret
+                      key: POSTGRES_PASSWORD
+              command: ["sh", "-c", "pg_dump --no-owner -f /backup/todos.sql"]
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
+          containers:
+            - name: upload
+              image: gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
+              env:
+                - name: BACKUP_BUCKET
+                  valueFrom:
+                    configMapKeyRef:
+                      name: todo-config
+                      key: BACKUP_BUCKET
+                - name: NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+              command:
+                - sh
+                - -c
+                - |
+                  set -eu
+                  object="gs://$BACKUP_BUCKET/$NAMESPACE/todos-$(date -u +%Y-%m-%dT%H%M%SZ).sql"
+                  gcloud storage cp /backup/todos.sql "$object"
+                  echo "Uploaded $object"
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
+                  readOnly: true

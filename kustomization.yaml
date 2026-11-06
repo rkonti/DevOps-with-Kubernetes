@@ -14,6 +14,8 @@ resources:
   - todo-backend/manifests/deployment.yaml
   - todo-backend/manifests/service.yaml
   - todo-backend/manifests/cronjob.yaml
+  - todo-backend/manifests/backup-serviceaccount.yaml
+  - todo-backend/manifests/backup-cronjob.yaml
 images:
   - name: PROJECT/TODO-APP
     newName: europe-north1-docker.pkg.dev/dwk-gke-513214/dwk/todo-app

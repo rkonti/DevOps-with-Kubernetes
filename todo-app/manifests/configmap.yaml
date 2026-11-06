@@ -11,3 +11,4 @@ data:
   PGHOST: todo-db-svc
   PGDATABASE: todos
   RANDOM_ARTICLE_URL: https://en.wikipedia.org/wiki/Special:Random
+  BACKUP_BUCKET: dwk-todo-backups-513214
