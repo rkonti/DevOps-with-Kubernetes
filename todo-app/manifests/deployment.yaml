@@ -23,6 +23,13 @@ spec:
         - name: todo-app
           image: PROJECT/TODO-APP
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
           env:
             - name: PORT
               value: "3000"

@@ -23,6 +23,13 @@ spec:
             # pg_dump must be at least the server's version, so use the same image as the database
             - name: dump
               image: postgres:17-alpine
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 250m
+                  memory: 128Mi
               env:
                 - name: PGHOST
                   valueFrom:
@@ -51,6 +58,13 @@ spec:
           containers:
             - name: upload
               image: gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 256Mi
               env:
                 - name: BACKUP_BUCKET
                   valueFrom:
