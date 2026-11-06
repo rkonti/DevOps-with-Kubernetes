@@ -46,6 +46,7 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [3.9. DBaaS vs DIY](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.9#39-dbaas-vs-diy) — tag `3.9`
 * [3.10. Project, step 18](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.10/todo-backend/manifests/backup-cronjob.yaml) — tag `3.10`
 * [3.11. Project, step 19](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.11/todo-backend/manifests) — tag `3.11`
+* [3.12. Project, step 20](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.12/screenshots/3.12-gke-logs.png) — tag `3.12`
 
 
 ## 3.9 DBaaS vs DIY
