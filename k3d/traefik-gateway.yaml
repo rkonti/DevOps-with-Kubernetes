@@ -1,0 +1,11 @@
+# Enables Traefik's Gateway API provider in k3s, which creates the "traefik" GatewayClass
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    providers:
+      kubernetesGateway:
+        enabled: true

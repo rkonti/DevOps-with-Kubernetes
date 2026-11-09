@@ -48,6 +48,10 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [3.11. Project, step 19](https://github.com/rkonti/DevOps-with-Kubernetes/tree/3.11/todo-backend/manifests) — tag `3.11`
 * [3.12. Project, step 20](https://github.com/rkonti/DevOps-with-Kubernetes/blob/3.12/screenshots/3.12-gke-logs.png) — tag `3.12`
 
+### Chapter 5
+
+* [4.1. Readiness probe](https://github.com/rkonti/DevOps-with-Kubernetes/tree/4.1/ping-pong) — tag `4.1`
+
 
 ## 3.9 DBaaS vs DIY
 Analyzing the pros and cons of DBaaS vs DIY:

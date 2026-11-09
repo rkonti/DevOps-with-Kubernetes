@@ -32,6 +32,14 @@ def pingpong_count():
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
+        # Readiness probe: ready only when ping-pong answers with a count
+        if self.path == "/healthz":
+            ready = isinstance(pingpong_count(), int)
+            self.send_response(200 if ready else 500)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(b"ok" if ready else b"ping-pong unavailable")
+            return
         self.send_response(200)
         self.send_header("Content-Type", "text/plain; charset=utf-8")
         self.end_headers()

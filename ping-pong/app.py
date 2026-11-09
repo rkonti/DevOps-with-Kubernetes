@@ -1,5 +1,4 @@
 import os
-import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import psycopg
@@ -9,22 +8,28 @@ PORT = int(os.environ["PORT"])
 # psycopg reads the connection settings from the standard libpq
 # environment variables (PGHOST, PGUSER, PGPASSWORD, PGDATABASE)
 def connect():
-    return psycopg.connect(autocommit=True)
+    return psycopg.connect(autocommit=True, connect_timeout=2)
+
+db_initialized = False
 
 def init_db():
-    while True:
-        try:
-            with connect() as conn:
-                conn.execute(
-                    "CREATE TABLE IF NOT EXISTS counter (id INT PRIMARY KEY, value INT NOT NULL)"
-                )
-                conn.execute(
-                    "INSERT INTO counter (id, value) VALUES (1, 0) ON CONFLICT (id) DO NOTHING"
-                )
-            return
-        except psycopg.OperationalError as e:
-            print(f"Database not ready, retrying: {e}", flush=True)
-            time.sleep(2)
+    """Create the counter table once the database is reachable."""
+    global db_initialized
+    if db_initialized:
+        return
+    with connect() as conn:
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS counter (id INT PRIMARY KEY, value INT NOT NULL)"
+        )
+        conn.execute(
+            "INSERT INTO counter (id, value) VALUES (1, 0) ON CONFLICT (id) DO NOTHING"
+        )
+    db_initialized = True
+
+def check_db():
+    init_db()
+    with connect() as conn:
+        conn.execute("SELECT 1")
 
 def increment_counter():
     """Increment the counter and return the value it had before."""
@@ -48,6 +53,12 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
+            # Readiness probe: ready only when the database is reachable
+            if self.path == "/healthz":
+                check_db()
+                self.send_text(200, "ok")
+                return
+            init_db()
             # The HTTPRoute rewrites /pingpong to /
             if self.path == "/":
                 self.send_text(200, f"pong {increment_counter()}")
@@ -58,8 +69,6 @@ class Handler(BaseHTTPRequestHandler):
         except psycopg.Error as e:
             print(f"Database error: {e}", flush=True)
             self.send_text(503, "Database unavailable")
-
-init_db()
 
 print(f"Server started in port {PORT}", flush=True)
 

@@ -15,8 +15,15 @@ spec:
     spec:
       containers:
         - name: ping-pong
-          image: europe-north1-docker.pkg.dev/dwk-gke-513214/dwk/ping-pong:3.4
+          image: ping-pong:4.1
           imagePullPolicy: IfNotPresent
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            httpGet:
+              path: /healthz
+              port: 3000
           env:
             - name: PORT
               value: "3000"
