@@ -28,6 +28,10 @@ def init_db():
         conn.execute(
             "CREATE TABLE IF NOT EXISTS todos (id SERIAL PRIMARY KEY, content TEXT NOT NULL)"
         )
+        # Added in exercise 4.5; existing todos start as not done
+        conn.execute(
+            "ALTER TABLE todos ADD COLUMN IF NOT EXISTS done BOOLEAN NOT NULL DEFAULT FALSE"
+        )
     db_initialized = True
 
 def check_db():
@@ -37,12 +41,20 @@ def check_db():
 
 def fetch_todos():
     with connect() as conn:
-        return conn.execute("SELECT id, content FROM todos ORDER BY id").fetchall()
+        return conn.execute("SELECT id, content, done FROM todos ORDER BY id").fetchall()
 
 def create_todo(content):
     with connect() as conn:
         return conn.execute(
-            "INSERT INTO todos (content) VALUES (%s) RETURNING id, content", (content,)
+            "INSERT INTO todos (content) VALUES (%s) RETURNING id, content, done", (content,)
+        ).fetchone()
+
+def update_todo(todo_id, done):
+    """Return the updated todo, or None if there is no todo with that id."""
+    with connect() as conn:
+        return conn.execute(
+            "UPDATE todos SET done = %s WHERE id = %s RETURNING id, content, done",
+            (done, todo_id),
         ).fetchone()
 
 class Handler(BaseHTTPRequestHandler):
@@ -102,6 +114,34 @@ class Handler(BaseHTTPRequestHandler):
         except psycopg.Error as e:
             log.error("Database error: %s", e)
             self.send_json(503, {"error": "database unavailable"})
+
+    def do_PUT(self):
+        parts = self.path.strip("/").split("/")
+        if len(parts) != 2 or parts[0] != "todos" or not parts[1].isdigit():
+            self.send_json(404, {"error": "not found"})
+            return
+        todo_id = int(parts[1])
+        length = int(self.headers.get("Content-Length", 0))
+        try:
+            done = json.loads(self.rfile.read(length))["done"]
+        except (json.JSONDecodeError, KeyError, TypeError):
+            done = None
+        if not isinstance(done, bool):
+            log.warning("Rejected update of todo %d: invalid request body", todo_id)
+            self.send_json(400, {"error": "expected JSON body with a boolean 'done'"})
+            return
+        try:
+            init_db()
+            todo = update_todo(todo_id, done)
+        except psycopg.Error as e:
+            log.error("Database error: %s", e)
+            self.send_json(503, {"error": "database unavailable"})
+            return
+        if todo is None:
+            self.send_json(404, {"error": f"todo {todo_id} not found"})
+            return
+        log.info("Marked todo %d as %s", todo_id, "done" if done else "not done")
+        self.send_json(200, todo)
 
 log.info("Server started in port %d", PORT)
 

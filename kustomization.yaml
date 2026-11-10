@@ -17,7 +17,7 @@ resources:
 images:
   - name: PROJECT/TODO-APP
     newName: todo-app
-    newTag: "4.2"
+    newTag: "4.5"
   - name: PROJECT/TODO-BACKEND
     newName: todo-backend
-    newTag: "4.2"
+    newTag: "4.5"

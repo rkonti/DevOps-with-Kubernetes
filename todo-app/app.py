@@ -37,8 +37,13 @@ HTML = """<!doctype html>
     <input type="text" name="todo" maxlength="{max_length}" required placeholder="Todo (max {max_length} characters)">
     <button type="submit">Send</button>
   </form>
+  <h2>Todo</h2>
   <ul>
 {todos}
+  </ul>
+  <h2>Done</h2>
+  <ul>
+{done}
   </ul>
   <form method="post" action="/break">
     <button type="submit">Break the app</button>
@@ -74,6 +79,28 @@ def create_todo(content):
     )
     with urllib.request.urlopen(request, timeout=5):
         pass
+
+def mark_done(todo_id):
+    request = urllib.request.Request(
+        f"{TODOS_URL}/{todo_id}",
+        data=json.dumps({"done": True}).encode(),
+        headers={"Content-Type": "application/json"},
+        method="PUT",
+    )
+    with urllib.request.urlopen(request, timeout=5):
+        pass
+
+def render_todo(todo):
+    content = html.escape(todo["content"])
+    if todo["done"]:
+        return f"    <li>{content}</li>"
+    # Browsers can only send GET and POST from a form, so the button posts
+    # here and the app sends the PUT to the backend
+    return (
+        f'    <li>{content} '
+        f'<form method="post" action="/todos/{todo["id"]}/done" style="display: inline;">'
+        f'<button type="submit">Mark as done</button></form></li>'
+    )
 
 def backend_ready():
     try:
@@ -152,14 +179,18 @@ class Handler(BaseHTTPRequestHandler):
         elif path == "/":
             meta = current_image()
             try:
-                todos = "\n".join(
-                    f"    <li>{html.escape(todo['content'])}</li>" for todo in fetch_todos()
-                )
+                all_todos = fetch_todos()
+                todos = "\n".join(render_todo(t) for t in all_todos if not t["done"])
+                done = "\n".join(render_todo(t) for t in all_todos if t["done"])
             except OSError as e:
                 print(f"Failed to fetch todos: {e}", flush=True)
                 todos = "    <li>Could not load todos</li>"
+                done = ""
             body = HTML.format(
-                version=int(meta["fetched_at"]), todos=todos, max_length=TODO_MAX_LENGTH
+                version=int(meta["fetched_at"]),
+                todos=todos,
+                done=done,
+                max_length=TODO_MAX_LENGTH,
             ).encode()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -194,6 +225,16 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/break":
             print("App broken via the button, liveness probe will now fail", flush=True)
             is_healthy = False
+            self.send_response(303)
+            self.send_header("Location", "/")
+            self.end_headers()
+            return
+        parts = self.path.strip("/").split("/")
+        if len(parts) == 3 and parts[0] == "todos" and parts[1].isdigit() and parts[2] == "done":
+            try:
+                mark_done(int(parts[1]))
+            except OSError as e:
+                print(f"Failed to mark todo {parts[1]} as done: {e}", flush=True)
             self.send_response(303)
             self.send_header("Location", "/")
             self.end_headers()
