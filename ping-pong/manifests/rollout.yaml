@@ -1,10 +1,19 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: ping-pong
   namespace: exercises
 spec:
   replicas: 1
+  strategy:
+    canary:
+      steps:
+        - setWeight: 50
+        # Watches the namespace's CPU usage for 5 minutes and aborts
+        # (reverting to the stable version) if it gets too high
+        - analysis:
+            templates:
+              - templateName: cpu-usage
   selector:
     matchLabels:
       app: ping-pong
@@ -15,7 +24,7 @@ spec:
     spec:
       containers:
         - name: ping-pong
-          image: ping-pong:4.1
+          image: ping-pong:4.4
           imagePullPolicy: IfNotPresent
           readinessProbe:
             initialDelaySeconds: 5

@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: cpu-usage
+  namespace: exercises
+spec:
+  metrics:
+    - name: cpu-usage
+      # Check every 30 seconds for 5 minutes; a single failed check aborts the rollout
+      interval: 30s
+      count: 10
+      failureLimit: 0
+      # Total CPU cores used by all containers in the namespace. It normally
+      # stays around 0.01, so 0.1 leaves room for the extra canary pod.
+      successCondition: result < 0.1
+      provider:
+        prometheus:
+          address: http://kube-prometheus-stack-prometheus.prometheus.svc.cluster.local:9090
+          query: |
+            scalar(
+              sum(rate(container_cpu_usage_seconds_total{namespace="exercises", container!=""}[1m]))
+            )
