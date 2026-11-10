@@ -51,6 +51,7 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 ### Chapter 5
 
 * [4.1. Readiness probe](https://github.com/rkonti/DevOps-with-Kubernetes/tree/4.1/ping-pong) — tag `4.1`
+* [4.2. Project, step 21](https://github.com/rkonti/DevOps-with-Kubernetes/tree/4.2/todo-app) — tag `4.2`
 
 
 ## 3.9 DBaaS vs DIY

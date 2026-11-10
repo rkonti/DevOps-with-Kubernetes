@@ -1,6 +1,8 @@
 import html
 import json
 import os
+import signal
+import sys
 import time
 import urllib.parse
 import urllib.request
@@ -13,8 +15,14 @@ IMAGE_TTL = int(os.environ["IMAGE_TTL_SECONDS"])
 TODOS_URL = os.environ["TODOS_URL"]
 TODO_MAX_LENGTH = int(os.environ["TODO_MAX_LENGTH"])
 
+BACKEND_HEALTH_URL = urllib.parse.urljoin(TODOS_URL, "/healthz")
+
 IMAGE_FILE = os.path.join(CACHE_DIR, "image.jpg")
 META_FILE = os.path.join(CACHE_DIR, "image.json")
+
+# Set to False by the "Break the app" button. The liveness probe then fails
+# and Kubernetes restarts the container, which starts healthy again.
+is_healthy = True
 
 HTML = """<!doctype html>
 <html lang="en">
@@ -32,7 +40,23 @@ HTML = """<!doctype html>
   <ul>
 {todos}
   </ul>
+  <form method="post" action="/break">
+    <button type="submit">Break the app</button>
+  </form>
   <p>DevOps with Kubernetes 2026</p>
+</body>
+</html>
+"""
+
+BROKEN_HTML = """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Todo App</title>
+</head>
+<body>
+  <h1>Todo App is broken</h1>
+  <p>Kubernetes will restart it shortly.</p>
 </body>
 </html>
 """
@@ -50,6 +74,13 @@ def create_todo(content):
     )
     with urllib.request.urlopen(request, timeout=5):
         pass
+
+def backend_ready():
+    try:
+        with urllib.request.urlopen(BACKEND_HEALTH_URL, timeout=2):
+            return True
+    except OSError:
+        return False
 
 def load_meta():
     try:
@@ -98,9 +129,27 @@ def current_image():
         return meta
 
 class Handler(BaseHTTPRequestHandler):
+    def send_status(self, status, body):
+        self.send_response(status)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(body.encode())
+
     def do_GET(self):
         path = self.path.split("?")[0]
-        if path == "/":
+        # Liveness probe: fails only when the app has been broken
+        if path == "/healthz":
+            self.send_status(200 if is_healthy else 500, "ok" if is_healthy else "broken")
+        # Readiness probe: also requires the backend (and so the database) to be ready
+        elif path == "/readyz":
+            ready = is_healthy and backend_ready()
+            self.send_status(200 if ready else 500, "ready" if ready else "not ready")
+        elif not is_healthy:
+            self.send_response(500)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(BROKEN_HTML.encode())
+        elif path == "/":
             meta = current_image()
             try:
                 todos = "\n".join(
@@ -141,6 +190,14 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
 
     def do_POST(self):
+        global is_healthy
+        if self.path == "/break":
+            print("App broken via the button, liveness probe will now fail", flush=True)
+            is_healthy = False
+            self.send_response(303)
+            self.send_header("Location", "/")
+            self.end_headers()
+            return
         if self.path != "/todos":
             self.send_response(404)
             self.end_headers()
@@ -158,6 +215,10 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
 os.makedirs(CACHE_DIR, exist_ok=True)
+
+# As PID 1 the process ignores SIGTERM by default, so Kubernetes would wait out
+# the whole grace period before killing it on a restart
+signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
 
 print(f"Server started in port {PORT}", flush=True)
 
