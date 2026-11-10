@@ -52,6 +52,7 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 
 * [4.1. Readiness probe](https://github.com/rkonti/DevOps-with-Kubernetes/tree/4.1/ping-pong) — tag `4.1`
 * [4.2. Project, step 21](https://github.com/rkonti/DevOps-with-Kubernetes/tree/4.2/todo-app) — tag `4.2`
+* [4.3. Prometheus](https://github.com/rkonti/DevOps-with-Kubernetes/tree/4.3#43-prometheus) — tag `4.3`
 
 
 ## 3.9 DBaaS vs DIY
@@ -66,3 +67,15 @@ Analyzing the pros and cons of DBaaS vs DIY:
 |Ease of use|Easy but you have a lot less control|Harder but you maintain control|
 
 TL;DR: DBaaS costs more but saves a lot of work, while DIY is cheaper but takes much more work.
+
+## 4.3 Prometheus
+
+Number of pods created by StatefulSets in the `prometheus` namespace:
+
+```promql
+count(kube_pod_info{namespace="prometheus", created_by_kind="StatefulSet"})
+```
+
+The result is 2: the Prometheus and Alertmanager pods of `kube-prometheus-stack`.
+
+![Prometheus query result](screenshots/4.3-prometheus-query.png)
