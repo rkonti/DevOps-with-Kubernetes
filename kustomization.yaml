@@ -14,10 +14,14 @@ resources:
   - todo-backend/manifests/deployment.yaml
   - todo-backend/manifests/service.yaml
   - todo-backend/manifests/cronjob.yaml
+  - broadcaster/manifests/deployment.yaml
 images:
   - name: PROJECT/TODO-APP
     newName: todo-app
     newTag: "4.5"
   - name: PROJECT/TODO-BACKEND
     newName: todo-backend
-    newTag: "4.5"
+    newTag: "4.6"
+  - name: PROJECT/BROADCASTER
+    newName: broadcaster
+    newTag: "4.6"

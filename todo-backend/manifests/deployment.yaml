@@ -39,6 +39,11 @@ spec:
                 configMapKeyRef:
                   name: todo-config
                   key: TODO_MAX_LENGTH
+            - name: NATS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-config
+                  key: NATS_URL
             - name: PGHOST
               valueFrom:
                 configMapKeyRef:

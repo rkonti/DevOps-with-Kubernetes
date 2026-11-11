@@ -1,13 +1,18 @@
+import asyncio
 import json
 import logging
 import os
+import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
+import nats
 import psycopg
 from psycopg.rows import dict_row
 
 PORT = int(os.environ["PORT"])
 MAX_LENGTH = int(os.environ["TODO_MAX_LENGTH"])
+NATS_URL = os.getenv("NATS_URL", "")
+NATS_SUBJECT = "todos"
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("todo-backend")
@@ -49,6 +54,31 @@ def create_todo(content):
             "INSERT INTO todos (content) VALUES (%s) RETURNING id, content, done", (content,)
         ).fetchone()
 
+# The HTTP server is synchronous but nats-py is asyncio based, so the NATS
+# connection lives on its own event loop in a background thread
+nats_loop = asyncio.new_event_loop()
+threading.Thread(target=nats_loop.run_forever, daemon=True).start()
+nats_client = None
+
+async def nats_publish(payload):
+    global nats_client
+    if nats_client is None or nats_client.is_closed:
+        nats_client = await nats.connect(NATS_URL, connect_timeout=2, max_reconnect_attempts=-1)
+    await nats_client.publish(NATS_SUBJECT, payload)
+    await nats_client.flush(timeout=2)
+
+def publish_event(action, todo):
+    """Tell the broadcaster about a change. The todo is already saved, so a
+    NATS outage only means the chat message is skipped."""
+    if not NATS_URL:
+        return
+    payload = json.dumps({"action": action, "todo": todo}).encode()
+    future = asyncio.run_coroutine_threadsafe(nats_publish(payload), nats_loop)
+    try:
+        future.result(timeout=5)
+    except Exception as e:
+        log.warning("Could not publish %s event for todo %d to NATS: %s", action, todo["id"], e)
+
 def update_todo(todo_id, done):
     """Return the updated todo, or None if there is no todo with that id."""
     with connect() as conn:
@@ -68,6 +98,9 @@ class Handler(BaseHTTPRequestHandler):
         body = json.dumps(data).encode()
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
+        # Lets the client finish reading before the connection closes, so
+        # publishing to NATS after the response doesn't delay it
+        self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
 
@@ -111,6 +144,7 @@ class Handler(BaseHTTPRequestHandler):
             todo = create_todo(content)
             log.info("Created todo %d: %r", todo["id"], content)
             self.send_json(201, todo)
+            publish_event("created", todo)
         except psycopg.Error as e:
             log.error("Database error: %s", e)
             self.send_json(503, {"error": "database unavailable"})
@@ -142,6 +176,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         log.info("Marked todo %d as %s", todo_id, "done" if done else "not done")
         self.send_json(200, todo)
+        publish_event("updated", todo)
 
 log.info("Server started in port %d", PORT)
 
