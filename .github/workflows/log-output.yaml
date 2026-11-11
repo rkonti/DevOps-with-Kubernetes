@@ -1,0 +1,62 @@
+name: Release log-output
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - log-output/**
+      - .github/workflows/log-output.yaml
+
+# Pushing images to ghcr.io and committing the new image tags back
+permissions:
+  contents: write
+  packages: write
+
+env:
+  REGISTRY: ghcr.io/${{ github.repository_owner }}
+
+jobs:
+  build-publish-release:
+    name: Build, Publish and Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Tag the images with the commit SHA to get a unique tag per release
+      - name: Build and publish
+        run: |-
+          for app in writer reader; do
+            image="$REGISTRY/log-output-$app:$GITHUB_SHA"
+            docker build --tag "$image" \
+              --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+              "log-output/$app"
+            docker push "$image"
+          done
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v3
+
+      - name: Use the new images
+        working-directory: log-output
+        run: |-
+          kustomize edit set image \
+            PROJECT/LOG-OUTPUT-WRITER=$REGISTRY/log-output-writer:$GITHUB_SHA \
+            PROJECT/LOG-OUTPUT-READER=$REGISTRY/log-output-reader:$GITHUB_SHA
+
+      # Argo CD deploys whatever this commit describes. Commits made with
+      # GITHUB_TOKEN don't trigger workflows, so this doesn't loop.
+      - name: Commit the new image tags
+        uses: EndBug/add-and-commit@v10
+        with:
+          add: log-output/kustomization.yaml
+          message: Release log-output ${{ github.sha }}

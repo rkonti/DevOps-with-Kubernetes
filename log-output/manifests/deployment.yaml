@@ -25,7 +25,7 @@ spec:
                 path: information.txt
       containers:
         - name: log-writer
-          image: log-output-writer:4.1
+          image: PROJECT/LOG-OUTPUT-WRITER
           imagePullPolicy: IfNotPresent
           env:
             - name: LOG_FILE
@@ -34,7 +34,7 @@ spec:
             - name: shared-files
               mountPath: /usr/src/app/files
         - name: log-reader
-          image: log-output-reader:4.1
+          image: PROJECT/LOG-OUTPUT-READER
           imagePullPolicy: IfNotPresent
           readinessProbe:
             initialDelaySeconds: 5

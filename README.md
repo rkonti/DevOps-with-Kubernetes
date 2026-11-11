@@ -56,6 +56,7 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [4.4. Your canary](https://github.com/rkonti/DevOps-with-Kubernetes/tree/4.4/ping-pong/manifests) — tag `4.4`
 * [4.5. Project, step 22](https://github.com/rkonti/DevOps-with-Kubernetes/tree/4.5/todo-backend) — tag `4.5`
 * [4.6. Project, step 23](https://github.com/rkonti/DevOps-with-Kubernetes/tree/4.6/broadcaster) — tag `4.6`
+* [4.7. Baby steps to GitOps](https://github.com/rkonti/DevOps-with-Kubernetes/blob/4.7/.github/workflows/log-output.yaml) — tag `4.7`
 
 
 ## 3.9 DBaaS vs DIY
