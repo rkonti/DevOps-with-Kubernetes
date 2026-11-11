@@ -1,15 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - manifests/configmap.yaml
-  - manifests/persistentvolumeclaim.yaml
-  - manifests/deployment.yaml
-  - manifests/service.yaml
-  - manifests/gateway.yaml
-  - manifests/route.yaml
+- manifests/configmap.yaml
+- manifests/persistentvolumeclaim.yaml
+- manifests/deployment.yaml
+- manifests/service.yaml
+- manifests/gateway.yaml
+- manifests/route.yaml
 # The release workflow sets these to the images it built for each commit
 images:
-  - name: PROJECT/LOG-OUTPUT-WRITER
-    newName: ghcr.io/rkonti/log-output-writer
-  - name: PROJECT/LOG-OUTPUT-READER
-    newName: ghcr.io/rkonti/log-output-reader
+- name: PROJECT/LOG-OUTPUT-READER
+  newName: ghcr.io/rkonti/log-output-reader
+  newTag: e6910ab0700769a55ac641e040481128d19ab4d8
+- name: PROJECT/LOG-OUTPUT-WRITER
+  newName: ghcr.io/rkonti/log-output-writer
+  newTag: e6910ab0700769a55ac641e040481128d19ab4d8
