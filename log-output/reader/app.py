@@ -47,7 +47,8 @@ class Handler(BaseHTTPRequestHandler):
             f"file content: {information()}\n"
             f"env variable: MESSAGE={MESSAGE}\n"
             f"{latest_line()}.\n"
-            f"Ping / Pongs: {pingpong_count()}"
+            f"Ping / Pongs: {pingpong_count()}\n"
+            f"Deployed with GitOps by Argo CD"
         )
         self.wfile.write(body.encode())
 
