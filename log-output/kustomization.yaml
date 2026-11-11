@@ -11,7 +11,7 @@ resources:
 images:
 - name: PROJECT/LOG-OUTPUT-READER
   newName: ghcr.io/rkonti/log-output-reader
-  newTag: e6910ab0700769a55ac641e040481128d19ab4d8
+  newTag: 945ef465030bb404b12db5297ce69824e8966eb0
 - name: PROJECT/LOG-OUTPUT-WRITER
   newName: ghcr.io/rkonti/log-output-writer
-  newTag: e6910ab0700769a55ac641e040481128d19ab4d8
+  newTag: 945ef465030bb404b12db5297ce69824e8966eb0
