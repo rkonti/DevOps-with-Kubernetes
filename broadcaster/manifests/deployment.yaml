@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: broadcaster
-  namespace: project
 spec:
   # Exercise 4.6 requires that 6 replicas don't send duplicate messages
   replicas: 6
@@ -26,6 +25,11 @@ spec:
               cpu: 100m
               memory: 64Mi
           env:
+            - name: NATS_SUBJECT
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-config
+                  key: NATS_SUBJECT
             - name: NATS_URL
               valueFrom:
                 configMapKeyRef:

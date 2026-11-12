@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todo-backend
-  namespace: project
 spec:
   replicas: 1
   selector:
@@ -39,6 +38,11 @@ spec:
                 configMapKeyRef:
                   name: todo-config
                   key: TODO_MAX_LENGTH
+            - name: NATS_SUBJECT
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-config
+                  key: NATS_SUBJECT
             - name: NATS_URL
               valueFrom:
                 configMapKeyRef:

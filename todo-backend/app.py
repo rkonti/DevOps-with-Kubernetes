@@ -12,7 +12,7 @@ from psycopg.rows import dict_row
 PORT = int(os.environ["PORT"])
 MAX_LENGTH = int(os.environ["TODO_MAX_LENGTH"])
 NATS_URL = os.getenv("NATS_URL", "")
-NATS_SUBJECT = "todos"
+NATS_SUBJECT = os.getenv("NATS_SUBJECT", "todos")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("todo-backend")

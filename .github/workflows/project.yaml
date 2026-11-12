@@ -1,5 +1,6 @@
 name: Release project
 
+# Commits to main are released to staging, tags are released to production
 on:
   push:
     branches:
@@ -8,9 +9,11 @@ on:
       - todo-app/**
       - todo-backend/**
       - broadcaster/**
-      - namespaces/project.yaml
-      - kustomization.yaml
+      - environments/**
       - .github/workflows/project.yaml
+    # Path filters are ignored for tags, so every tag releases production
+    tags:
+      - "*"
 
 # Pushing images to ghcr.io and committing the new image tags back
 permissions:
@@ -29,6 +32,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Pick the environment
+        run: |-
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            echo "ENVIRONMENT=production" >> $GITHUB_ENV
+            echo "IMAGE_TAG=$GITHUB_REF_NAME" >> $GITHUB_ENV
+          else
+            echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+            echo "IMAGE_TAG=$GITHUB_SHA" >> $GITHUB_ENV
+          fi
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v4
         with:
@@ -36,31 +49,37 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Tag the images with the commit SHA to get a unique tag per release
       - name: Build and publish
         run: |-
           for app in todo-app todo-backend broadcaster; do
-            image="$REGISTRY/$app:$GITHUB_SHA"
+            image="$REGISTRY/$app:$IMAGE_TAG"
             docker build --tag "$image" \
               --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
               "$app"
             docker push "$image"
           done
 
+      # A tag checkout is detached, so switch to the latest main for the commit
+      - name: Switch to main
+        run: |-
+          git fetch --depth 1 origin main
+          git checkout -B main FETCH_HEAD
+
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v3
 
       - name: Use the new images
+        working-directory: environments/${{ env.ENVIRONMENT }}
         run: |-
           kustomize edit set image \
-            PROJECT/TODO-APP=$REGISTRY/todo-app:$GITHUB_SHA \
-            PROJECT/TODO-BACKEND=$REGISTRY/todo-backend:$GITHUB_SHA \
-            PROJECT/BROADCASTER=$REGISTRY/broadcaster:$GITHUB_SHA
+            PROJECT/TODO-APP=$REGISTRY/todo-app:$IMAGE_TAG \
+            PROJECT/TODO-BACKEND=$REGISTRY/todo-backend:$IMAGE_TAG \
+            PROJECT/BROADCASTER=$REGISTRY/broadcaster:$IMAGE_TAG
 
-      # Argo CD deploys whatever this commit describes. Commits made with
+      # Argo CD deploys whatever main describes. Commits made with
       # GITHUB_TOKEN don't trigger workflows, so this doesn't loop.
       - name: Commit the new image tags
         uses: EndBug/add-and-commit@v10
         with:
-          add: kustomization.yaml
-          message: Release project ${{ github.sha }}
+          add: environments/${{ env.ENVIRONMENT }}/kustomization.yaml
+          message: Release ${{ env.ENVIRONMENT }} ${{ env.IMAGE_TAG }}

@@ -9,12 +9,16 @@ import urllib.request
 import nats
 
 NATS_URL = os.environ["NATS_URL"]
-NATS_SUBJECT = "todos"
+# Each environment publishes on its own subject so they never receive
+# each other's messages through the shared NATS server
+NATS_SUBJECT = os.getenv("NATS_SUBJECT", "todos")
 # All replicas join the same queue group, so NATS hands each message to only
 # one of them and scaling up doesn't send duplicates
 QUEUE_GROUP = "broadcaster"
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
+# Staging sets this to "false" so it only logs, even if a token is present
+FORWARD_MESSAGES = os.getenv("FORWARD_MESSAGES", "true") == "true"
 POD = os.getenv("HOSTNAME", "broadcaster")
 
 logging.basicConfig(
@@ -45,6 +49,9 @@ async def handle(msg):
         text = format_message(json.loads(msg.data))
     except (json.JSONDecodeError, KeyError, TypeError) as e:
         log.warning("Ignoring malformed message %r: %s", msg.data, e)
+        return
+    if not FORWARD_MESSAGES:
+        log.info("[%s] Forwarding disabled, message: %s", POD, text)
         return
     if not (TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID):
         log.info("[%s] Telegram not configured, would send: %s", POD, text)

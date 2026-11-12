@@ -1,0 +1,14 @@
+# In staging the broadcaster only logs messages, it never forwards them
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broadcaster
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: broadcaster
+          env:
+            - name: FORWARD_MESSAGES
+              value: "false"

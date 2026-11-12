@@ -2,7 +2,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: todo-config
-  namespace: project
 data:
   IMAGE_URL: https://picsum.photos/1200
   IMAGE_TTL_SECONDS: "600"
@@ -13,3 +12,4 @@ data:
   RANDOM_ARTICLE_URL: https://en.wikipedia.org/wiki/Special:Random
   BACKUP_BUCKET: dwk-todo-backups-513214
   NATS_URL: nats://my-nats.nats:4222
+  NATS_SUBJECT: todos

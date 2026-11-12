@@ -1,0 +1,65 @@
+# Daily pg_dump of the todo database into the todo-backups volume, keeping the
+# latest 7. Replaces the Google Cloud Storage backup from exercise 3.10.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: todo-backup
+spec:
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: todo-backups
+          containers:
+            # pg_dump must be at least the server's version, so use the same image as the database
+            - name: backup
+              image: postgres:17-alpine
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 250m
+                  memory: 128Mi
+              env:
+                - name: PGHOST
+                  valueFrom:
+                    configMapKeyRef:
+                      name: todo-config
+                      key: PGHOST
+                - name: PGDATABASE
+                  valueFrom:
+                    configMapKeyRef:
+                      name: todo-config
+                      key: PGDATABASE
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: todo-db-secret
+                      key: POSTGRES_USER
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: todo-db-secret
+                      key: POSTGRES_PASSWORD
+              command:
+                - sh
+                - -c
+                - |
+                  set -eu
+                  file="/backups/todos-$(date -u +%Y-%m-%dT%H%M%SZ).sql"
+                  pg_dump --no-owner -f "$file"
+                  echo "Backed up to $file"
+                  ls -1t /backups/todos-*.sql | tail -n +8 | xargs -r rm --
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups

@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Shared by the environments in environments/. Each overlay sets the
+# namespace and the images it deploys (PROJECT/* are placeholders).
+resources:
+  - ../../todo-app
+  - ../../todo-backend
+  - ../../broadcaster

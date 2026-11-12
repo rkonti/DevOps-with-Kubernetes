@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: todo-db
-  namespace: project
 spec:
   serviceName: todo-db-svc
   replicas: 1
