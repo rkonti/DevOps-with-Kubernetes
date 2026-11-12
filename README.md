@@ -59,6 +59,7 @@ Submissions for the University of Helsinki course [DevOps with Kubernetes](https
 * [4.7. Baby steps to GitOps](https://github.com/rkonti/DevOps-with-Kubernetes/blob/4.7/.github/workflows/log-output.yaml) — tag `4.7`
 * [4.8. Project, step 24](https://github.com/rkonti/DevOps-with-Kubernetes/blob/4.8/.github/workflows/project.yaml) — tag `4.8`
 * [4.9. Project, step 25](https://github.com/rkonti/DevOps-with-Kubernetes/tree/4.9/environments) — tag `4.9`
+* [4.10. The project, the grande finale](https://github.com/rkonti/dwk-project-config) — tag `4.10`. Configuration in [rkonti/dwk-project-config](https://github.com/rkonti/dwk-project-config), released by [.github/workflows/project.yaml](https://github.com/rkonti/DevOps-with-Kubernetes/blob/4.10/.github/workflows/project.yaml)
 
 
 ## 3.9 DBaaS vs DIY

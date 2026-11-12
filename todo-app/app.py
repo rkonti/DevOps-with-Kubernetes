@@ -6,7 +6,7 @@ import sys
 import time
 import urllib.parse
 import urllib.request
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 PORT = int(os.environ["PORT"])
 CACHE_DIR = os.environ["CACHE_DIR"]
@@ -138,11 +138,16 @@ def current_image():
     """Return the cached image's metadata, refreshing it when it has expired.
 
     Once the image is older than IMAGE_TTL, it is served one more time and
-    the request after that gets a new image.
+    the request after that gets a new image. Returns None when there is no
+    cached image and a new one can't be fetched.
     """
     meta = load_meta()
     if meta is None or not os.path.exists(IMAGE_FILE):
-        return fetch_image()
+        try:
+            return fetch_image()
+        except OSError as e:
+            print(f"Failed to fetch an image, showing the page without one: {e}", flush=True)
+            return None
     if time.time() - meta["fetched_at"] < IMAGE_TTL:
         return meta
     if not meta["stale_served"]:
@@ -187,7 +192,7 @@ class Handler(BaseHTTPRequestHandler):
                 todos = "    <li>Could not load todos</li>"
                 done = ""
             body = HTML.format(
-                version=int(meta["fetched_at"]),
+                version=int(meta["fetched_at"]) if meta else 0,
                 todos=todos,
                 done=done,
                 max_length=TODO_MAX_LENGTH,
@@ -263,5 +268,7 @@ signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
 
 print(f"Server started in port {PORT}", flush=True)
 
-server = HTTPServer(("0.0.0.0", PORT), Handler)
+# Threaded, so a slow request (like fetching the image) can't block the
+# Kubernetes probes and make the pod look unhealthy
+server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
 server.serve_forever()
