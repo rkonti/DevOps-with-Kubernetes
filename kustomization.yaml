@@ -15,13 +15,11 @@ resources:
   - todo-backend/manifests/service.yaml
   - todo-backend/manifests/cronjob.yaml
   - broadcaster/manifests/deployment.yaml
+# The release workflow sets these to the images it built for each commit
 images:
   - name: PROJECT/TODO-APP
-    newName: todo-app
-    newTag: "4.5"
+    newName: ghcr.io/rkonti/todo-app
   - name: PROJECT/TODO-BACKEND
-    newName: todo-backend
-    newTag: "4.6"
+    newName: ghcr.io/rkonti/todo-backend
   - name: PROJECT/BROADCASTER
-    newName: broadcaster
-    newTag: "4.6"
+    newName: ghcr.io/rkonti/broadcaster

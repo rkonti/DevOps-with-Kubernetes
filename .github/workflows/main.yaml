@@ -1,4 +1,4 @@
-name: Release project
+name: Release project to GKE (retired)
 
 # The GKE cluster was retired after chapter 4, so this only runs manually.
 # For exercises 3.6-3.7 it ran on:
