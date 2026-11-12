@@ -2,26 +2,26 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: staging
 resources:
-  - ../base
-patches:
-  - path: configmap.yaml
-  - path: broadcaster.yaml
+- ../base
   # Production keeps localhost:8081, staging is served at staging.localhost:8081
-  - target:
-      kind: Ingress
-      name: todo-app-ingress
-    patch: |-
-      - op: add
-        path: /spec/rules/0/host
-        value: staging.localhost
+patches:
+- path: configmap.yaml
+- path: broadcaster.yaml
+- patch: |-
+    - op: add
+      path: /spec/rules/0/host
+      value: staging.localhost
+  target:
+    kind: Ingress
+    name: todo-app-ingress
 # Every commit to main: the release workflow sets these to that commit's images
 images:
-  - name: PROJECT/BROADCASTER
-    newName: ghcr.io/rkonti/broadcaster
-    newTag: fdbce340cf2c3b70bbabadaf5cebcc09e183dac2
-  - name: PROJECT/TODO-APP
-    newName: ghcr.io/rkonti/todo-app
-    newTag: fdbce340cf2c3b70bbabadaf5cebcc09e183dac2
-  - name: PROJECT/TODO-BACKEND
-    newName: ghcr.io/rkonti/todo-backend
-    newTag: fdbce340cf2c3b70bbabadaf5cebcc09e183dac2
+- name: PROJECT/BROADCASTER
+  newName: ghcr.io/rkonti/broadcaster
+  newTag: dc6f3dd8db938483177530458f5607417a8bbdf6
+- name: PROJECT/TODO-APP
+  newName: ghcr.io/rkonti/todo-app
+  newTag: dc6f3dd8db938483177530458f5607417a8bbdf6
+- name: PROJECT/TODO-BACKEND
+  newName: ghcr.io/rkonti/todo-backend
+  newTag: dc6f3dd8db938483177530458f5607417a8bbdf6
