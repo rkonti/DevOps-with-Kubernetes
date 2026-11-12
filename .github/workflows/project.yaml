@@ -65,7 +65,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: ${{ env.CONFIG_REPOSITORY }}
-          token: ${{ secrets.CONFIG_REPO_TOKEN }}
+          token: ${{ secrets.CONFIG_ACCESS_TOKEN }}
           path: config
 
       - name: Set up Kustomize
