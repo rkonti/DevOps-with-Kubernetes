@@ -18,10 +18,10 @@ patches:
 images:
 - name: PROJECT/BROADCASTER
   newName: ghcr.io/rkonti/broadcaster
-  newTag: dc6f3dd8db938483177530458f5607417a8bbdf6
+  newTag: b2631d66ec6fad2e6652fcf6049b841e32aba3ed
 - name: PROJECT/TODO-APP
   newName: ghcr.io/rkonti/todo-app
-  newTag: dc6f3dd8db938483177530458f5607417a8bbdf6
+  newTag: b2631d66ec6fad2e6652fcf6049b841e32aba3ed
 - name: PROJECT/TODO-BACKEND
   newName: ghcr.io/rkonti/todo-backend
-  newTag: dc6f3dd8db938483177530458f5607417a8bbdf6
+  newTag: b2631d66ec6fad2e6652fcf6049b841e32aba3ed
