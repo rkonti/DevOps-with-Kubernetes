@@ -64,6 +64,9 @@ jobs:
         run: |-
           git fetch --depth 1 origin main
           git checkout -B main FETCH_HEAD
+          # Without an upstream, the commit step's git push fails
+          git config branch.main.remote origin
+          git config branch.main.merge refs/heads/main
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v3
